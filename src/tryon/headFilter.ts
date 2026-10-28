@@ -8,12 +8,6 @@
 // melts away; stiff in a fast turn, so the hat keeps up. A spring's output
 // is smooth in position AND velocity, so no frame jumps, and it is the same
 // at any frame rate (the SDK's per-frame smoothing is not).
-//
-// Tuned offline on 7 recorded fit streams (still and shaking heads, desktop
-// and 4× throttled CPU) against the SDK's per-frame smoothing: as smooth and
-// within 5 ms of its lag in motion, 1.9× calmer at rest. Leading ahead of
-// the last fit along its velocity was tried and dropped: it saved little
-// lag and cost smoothness (each new fit corrects the guess).
 import { Quaternion, Vector3 } from "three";
 
 export type HeadFilterConfig = {
@@ -47,17 +41,7 @@ export type HeadPose = {
   scale: number;
 };
 
-/**
- * Dev checks: how many fits counted as new samples, and (while `record`)
- * each one as [t, px, py, pz, qx, qy, qz, qw, scale] for offline tuning.
- */
-export const headFilterStats = {
-  samples: 0,
-  record: false,
-  log: [] as number[][],
-};
-
-/** The crown (top of the head), canonical cm: speed is measured there. */
+/** The crown (top of the head), canonical cm: speed is read there. */
 const CROWN = new Vector3(0, 13.26, -3.76);
 
 const tq = new Quaternion();
@@ -157,14 +141,6 @@ export class HeadFilter {
       fit.quaternion.equals(cur.quaternion)
     )
       return false;
-    headFilterStats.samples += 1;
-    if (headFilterStats.record)
-      headFilterStats.log.push([
-        t,
-        ...fit.position.toArray(),
-        ...fit.quaternion.toArray(),
-        fit.scale,
-      ]);
 
     const jumpCm = this.ready
       ? crownOf(fit, new Vector3()).distanceTo(crownOf(cur, new Vector3())) /

@@ -1,16 +1,16 @@
 // The head the accessories sit on: the SDK's canonical head fit, filtered.
 //
-// useCanonicalHeadFit solves the head pose from the face landmarks; we read
-// its raw result (no SDK smoothing) and run it through HeadFilter (One Euro
-// + lead, headFilter.ts), so the head is steady at rest and moves smoothly
+// useCanonicalHeadFit solves the head pose from the face landmarks; we read its
+// raw result (no SDK smoothing) and run it through HeadFilter (a speed-adaptive
+// spring, headFilter.ts), so the head is steady at rest and moves smoothly
 // between tracker results instead of stepping. The filtered pose drives one
 // group, drawn straight into the scene (a portal, so no tracker group's own
-// per-frame transform can sneak in a step), holding BOTH the depth-only v3
-// head occluder and the items: they can't drift apart. Children are in
-// canonical centimetres.
+// per-frame transform can sneak in a step), holding BOTH the depth-only v3 head
+// occluder and the items: they can't drift apart. Children are in canonical
+// centimetres.
 //
-// The neck bust is the SDK's NeckOccluder (its own fit, with the neck bend
-// that keeps the shoulders level); it only hides hat ribbons behind the neck.
+// The neck bust is the SDK's NeckOccluder (its own fit, with the neck bend that
+// keeps the shoulders level); it only hides hat ribbons behind the neck.
 import { useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal, useFrame, useThree } from "@react-three/fiber";
 import {
@@ -31,13 +31,7 @@ import { NECK_OCCLUDER_URL, OCCLUDER_URL } from "./catalog";
 import { HeadFilter, type HeadPose } from "./headFilter";
 
 /** Face inference rate: the filter fills the frames between. */
-const FACE_FPS_DEFAULT = 20;
-
-/** Dev only: ?facefps=N overrides the rate, for the performance audit. */
-export const FACE_FPS =
-  (process.env.NODE_ENV !== "production" &&
-    Number(new URLSearchParams(window.location.search).get("facefps"))) ||
-  FACE_FPS_DEFAULT;
+export const FACE_FPS = 20;
 
 const occluderAsset = defineGltfAsset(OCCLUDER_URL);
 

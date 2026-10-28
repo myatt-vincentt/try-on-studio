@@ -18,11 +18,10 @@ show the way.
   SDK CDN serves them). Your hands stay in front of everything.
 - Steady on the head: the SDK's head fit through a speed-adaptive spring (`headFilter.ts`), with
   the head occluder moving in the same filtered group as the items. Tracking rates are set for
-  phones (face 20 Hz, hands 12 Hz); body tracking only runs for the flower crown. Audit and numbers
-  in `PLAN.md`; the harness is in `audit/`.
+  phones (face 20 Hz, hands 12 Hz); body tracking only runs for the flower crown.
 - Models: vincentt.studio head accessories (`public/models/vincentt-*.glb`); credits in
-  `CREDITS.md`. To swap items, edit `src/tryon/catalog.ts`, then re-render the HUD pictures
-  (`public/thumbs/`) with `tools/render-thumbs.cjs` (dev server running).
+  `CREDITS.md`. To swap items, edit `src/tryon/catalog.ts` and add a matching picture for the
+  item reel at `public/thumbs/<id>.webp`.
 - Dev preview without a camera: the media switcher (☰) starts on the SDK's "Person Shaking Head"
   video, and the keyboard stands in for the hand (← → flip, space locks, S shuffles, R resets).
   `?occ` draws the occluders to check the fit (dev only). An optional local clip goes at

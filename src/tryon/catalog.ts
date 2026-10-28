@@ -41,8 +41,7 @@ export type Slot = {
 
 // Hats sit 0.5–2.5 cm higher than the bare canonical skull puts them: real
 // heads have hair. The monocle's brows-up drop needs a firmer raise than its
-// author's range — some faces rest at 0.2–0.3. Checked on the SDK's five
-// sample videos (audit/fit.cjs).
+// author's range — some faces rest with the brows slightly up.
 export const SLOTS: readonly Slot[] = [
   {
     id: "hat",
@@ -90,7 +89,7 @@ export const SLOTS: readonly Slot[] = [
 
 export const modelUrl = (id: string) => `/models/vincentt-${id}.glb`;
 
-/** The item's picture in the HUD (tools/render-thumbs.cjs renders them). */
+/** The item's picture in the HUD's reel. */
 export const thumbUrl = (id: string) => `/thumbs/${id}.webp`;
 
 /** The SDK's v3 head occluder, hosted here until the SDK CDN serves it. */

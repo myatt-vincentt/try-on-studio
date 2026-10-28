@@ -3,7 +3,7 @@
 Build a look one slot at a time with the vincentt.studio head accessories, on SDK 2.0.0-alpha.9's
 head fit and occluders.
 
-## Decisions (from the creator)
+## Design
 
 - Three slots: hat, face (eyes / mask / goggles), mouth / beard. Eight hand-picked items each
   (`src/tryon/catalog.ts`).
@@ -30,7 +30,7 @@ head fit and occluders.
   can't drift apart. The SDK's `NeckOccluder` (bust) sits in the tracker.
 - `headFilter.ts` (pure, tested): a critically damped spring chasing the fit every frame, its
   stiffness rising with head speed — calm at rest, quick in a turn, smooth in position and
-  velocity, frame-rate independent. Tuned offline (`audit/grid.cjs`) on recorded fits.
+  velocity, frame-rate independent.
 - `Accessories.tsx`: the worn items. The models are in metres in the Spark AR reference's face
   frame, so one group (×100, then (0, −1.03, +7.30) cm) puts them in the canonical head frame — the
   shift the SDK used for its own Spark-based meshes. Each item loops the clips its author marked
@@ -45,27 +45,11 @@ head fit and occluders.
   occluder never opens, so it draws before the occluder and shows only while the mouth is open or
   smiling.
 - Per-item placement (`catalog.ts` `fit`: `y` / `z` cm, `scale` about the item's middle; and
-  `triggers` to override a face trigger's range), checked on the SDK's five sample videos with
-  `audit/fit.cjs`: hats sit 0.5–2.5 cm higher than the bare canonical skull (hair), the Dalí
-  moustache is 10 % larger, the monocle's brows-up drop needs a firmer raise (it fired on resting
-  faces), and the grill shows only past a closed-lip smile.
-- `Hud.tsx`: the item reel — pictures of the active slot's items (rendered from the models by
-  `tools/render-thumbs.cjs`, cropped to fill), the worn one large in the middle, two either side
-  (tap to wear, tap the middle to take off) — and the slot chips, each showing what's worn there.
-  Dots were read as a colour picker; pictures say what you're choosing.
-- Dev only: `DevKeys.tsx` (keyboard, `window.__tryon` with the audit probe), `DevMediaSwitcher.tsx`,
-  `?occ` (draw the occluders), `?facefps=` / `?handfps=` (tracker rates).
-
-## Audit (2026-10-28)
-
-Headless Chrome, fake webcam, `audit/` scripts. Before → after:
-
-- Frame rate (moving head): 25 → 50–57 fps on desktop; 18 → 38–42 fps with the CPU slowed 4×
-  (phone-class). The hand model was the biggest cost (20 → 12 Hz: 22 → 36 fps throttled); body
-  tracking now runs only for the flower crown. The remaining long frames are face / hand
-  inference (MediaPipe waits on the GPU inside the frame).
-- Fit wobble on a moving head: 5.4 → 1.0–1.2 px at the nose, 4.3 → 0.6 px at the crown, rotation
-  2.5° → 0.7° per frame. Still head: 1.9× calmer than the SDK's own smoothing.
-- Interaction: a wave no longer flips back and forth; clapping no longer locks; the OK-sign pinch
-  still locks; drags, taps, chips, shuffle and reset all checked at 375×812; both control rows
-  ≥ 48 px from the edges.
+  `triggers` to override a face trigger's range): hats sit a little higher than the bare
+  canonical skull (hair), the Dalí moustache is larger, the monocle's brows-up drop needs a firmer
+  raise (so it doesn't fire on resting faces), and the grill shows only past a closed-lip smile.
+- `Hud.tsx`: the item reel — pictures of the active slot's items (`public/thumbs/`, cropped to
+  fill), the worn one large in the middle, two either side (tap to wear, tap the middle to take
+  off) — and the slot chips, each showing what's worn there.
+- Dev only: `DevKeys.tsx` (keyboard, `window.__tryon` with the store and the live catalog),
+  `DevMediaSwitcher.tsx`, `?occ` (draw the occluders).

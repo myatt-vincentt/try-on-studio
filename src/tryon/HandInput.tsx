@@ -29,9 +29,9 @@ const PINCH = {
   /** No pinch this soon after a swipe (the fingers close mid-sweep). */
   afterSwipe: 400, // ms
   /**
-   * A fist also brings thumb and index together. Measured: a real pinch
-   * (the OK sign) keeps the fingers' mean curl ≤ 0.16; a fist that reads as
-   * a pinch sits around 0.85. Above this it's a fist, not a pinch.
+   * A fist also brings thumb and index together. A real pinch (the OK sign)
+   * keeps the other fingers open, so their mean curl stays low; above this
+   * it's a fist, not a pinch.
    */
   maxGrab: 0.5,
   /** Detections in a row the pinch must hold (≈ 160 ms at 12 Hz). */
@@ -45,17 +45,11 @@ const PINCH = {
 };
 
 /**
- * Hand inference rate. The hand model is the costliest thing on screen:
- * on a phone-class CPU, 20 → 12 took the frame rate from 22 to 36 fps, and a
- * sweep still reads at 12 (the swipe window holds 4 detections).
+ * Hand inference rate. The hand model is the costliest thing on screen, so
+ * it runs slower than the face; a sweep still reads at 12 (the swipe window
+ * holds 4 detections).
  */
 export const HAND_FPS = 12;
-
-/** Dev only: ?handfps=N overrides the rate, for the performance audit. */
-const handFps = () =>
-  (process.env.NODE_ENV !== "production" &&
-    Number(new URLSearchParams(window.location.search).get("handfps"))) ||
-  HAND_FPS;
 
 type Side = "left" | "right";
 
@@ -124,7 +118,7 @@ export const HandInput = () => {
   });
 
   return (
-    <HandTracker targetFps={handFps()}>
+    <HandTracker targetFps={HAND_FPS}>
       <HandCutout />
     </HandTracker>
   );

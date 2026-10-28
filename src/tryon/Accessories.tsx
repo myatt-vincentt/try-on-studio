@@ -156,7 +156,7 @@ const Worn = ({
   burst: number;
   tier: readonly [number, number];
   inMouth?: boolean;
-  /** Per-item placement (catalog.ts): read every frame, so it can be tuned live. */
+  /** Per-item placement (catalog.ts): read every frame, so it can be edited live. */
   fit: Item;
 }) => {
   const { value } = useXRAsset(assetFor(id));
