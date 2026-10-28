@@ -1,9 +1,8 @@
-// The worn items: one per slot, on the head the SDK fits every frame.
-//
-// HeadBinding runs the face tracker and the depth-only v3 head occluder (so
-// hat brims, straps and ribbons go behind the head); CanonicalHeadFrame is
-// the same fit as a plain group in canonical centimetres. The models are in
-// metres in the Spark AR face frame, so one group converts them (FRAME).
+// The worn items: one per slot, on the filtered head (FilteredHead.tsx: the
+// SDK's canonical head fit through a One Euro filter, with the depth-only v3
+// head occluder in the same group, so brims, straps and ribbons go behind the
+// head). The models are in metres in the Spark AR face frame, so one group
+// converts them to canonical centimetres (FRAME).
 //
 // Each item plays the loops its author marked autoplay (in the GLB's
 // scenes[0].extras.vincentt_config), pops in when it's put on, and plays its
@@ -12,10 +11,12 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
   AnimationMixer,
+  Box3,
   LoopOnce,
   LoopRepeat,
   Mesh,
   PMREMGenerator,
+  Vector3,
   type AnimationClip,
   type Group,
   type Material,
@@ -33,7 +34,6 @@ import {
   useXRAssetCache,
   type XRAssetDefinition,
 } from "@vincentt-xr/sdk";
-import { CanonicalHeadFrame, HeadBinding } from "@vincentt-xr/sdk/face-effects";
 import {
   BodyTracker,
   ShoulderOccluder,
@@ -42,16 +42,14 @@ import {
 } from "@vincentt-xr/sdk/tracking";
 
 import {
-  FIT_SMOOTHING,
   FRAME,
   modelUrl,
-  NECK_OCCLUDER_URL,
-  OCCLUDER_URL,
   SHOULDER_OCCLUDER_URL,
   SLOTS,
   type Item,
   type SlotId,
 } from "./catalog";
+import { FACE_FPS, FilteredHead, showOccluders } from "./FilteredHead";
 import { buildRig, type FaceTrigger } from "./rig";
 import { live, useStudio } from "./state";
 
@@ -169,8 +167,12 @@ const Worn = ({
     autoplayClips(cfg, value.animations).forEach((c) =>
       mixer.clipAction(c).setLoop(LoopRepeat, Infinity).play(),
     );
+    // Pop in about the item's own middle, not the face frame's origin
+    // (the tip of the nose), so a hat grows in place.
+    const centre = new Box3().setFromObject(root).getCenter(new Vector3());
     return {
       root,
+      centre,
       mixer,
       burst: burstClip(value.animations),
       shake: shakeClip(cfg, value.animations),
@@ -223,8 +225,10 @@ const Worn = ({
 
   if (!model) return null;
   return (
-    <group ref={holder} scale={0.6}>
-      <primitive object={model.root} />
+    <group ref={holder} position={model.centre} scale={0.6}>
+      <group position={model.centre.clone().negate()}>
+        <primitive object={model.root} />
+      </group>
     </group>
   );
 };
@@ -260,11 +264,6 @@ const BodyOccluderOrder = () => {
   return null;
 };
 
-/** Dev only: ?occ draws the occluders, to check the fit. */
-const showOccluders = () =>
-  process.env.NODE_ENV !== "production" &&
-  new URLSearchParams(window.location.search).has("occ");
-
 /** The blendshapes the models' face_triggers read (see rig.ts). */
 const FACE_INPUTS = [
   "jawOpen",
@@ -280,7 +279,9 @@ const FACE_EASE = 14;
 
 /** Copies the face's blendshapes into `live` and counts head shakes. */
 const FaceSignals = () => {
-  const face = useFaceInfo({ active: true });
+  // Same options as FilteredHead's FaceTracker: the first consumer of the
+  // shared face model sets its face count and rate.
+  const face = useFaceInfo({ active: true, numFaces: 1, targetFps: FACE_FPS });
   const raw = useRef<Readonly<Record<string, number | undefined>>>({});
   raw.current = face?.blendshapes ?? {};
   // Ease toward the latest readings: raw blendshapes flicker a few percent
@@ -343,49 +344,41 @@ export const Accessories = () => {
   const { look, burst } = useStudio();
   useStudioLight();
   usePreloadNeighbours(look.slot, look.picks[look.slot]);
+  const hangs = SLOTS.some((slot, s) => slot.items[look.picks[s]]?.hangs);
   return (
     <>
       <FaceSignals />
       <BodyOccluderOrder />
-      {/* Shoulders and chest, from body tracking: ribbon tails and braids
-          that hang behind the body hide there. */}
-      <BodyTracker bodyIndex={0}>
-        <ShoulderOccluder
-          url={SHOULDER_OCCLUDER_URL}
-          smoothing={FIT_SMOOTHING}
-          showDebugMaterial={showOccluders()}
-          opacity={0.45}
-        />
-      </BodyTracker>
-      <HeadBinding
-        numFaces={1}
-        occluder={{
-          url: OCCLUDER_URL,
-          smoothing: FIT_SMOOTHING,
-          neck: { url: NECK_OCCLUDER_URL },
-          showDebugMaterial: showOccluders(),
-          opacity: 0.45,
-        }}
-      >
-        <CanonicalHeadFrame smoothing={FIT_SMOOTHING}>
-          <group scale={FRAME.scale} position={FRAME.position}>
-            {SLOTS.map((slot, s) => {
-              const i = look.picks[s];
-              if (i < 0) return null;
-              const { id } = slot.items[i];
-              return (
-                <Worn
-                  key={`${slot.id}:${id}`}
-                  id={id}
-                  burst={burst[s]}
-                  tier={tierFor(slot.id, slot.items[i])}
-                  inMouth={slot.items[i].inMouth}
-                />
-              );
-            })}
-          </group>
-        </CanonicalHeadFrame>
-      </HeadBinding>
+      {/* Shoulders and chest, from body tracking, only while something
+          hangs below the head (the flower crown's ribbons): body tracking
+          is the most expensive model, so it doesn't run otherwise. */}
+      {hangs ? (
+        <BodyTracker bodyIndex={0}>
+          <ShoulderOccluder
+            url={SHOULDER_OCCLUDER_URL}
+            showDebugMaterial={showOccluders()}
+            opacity={0.45}
+          />
+        </BodyTracker>
+      ) : null}
+      <FilteredHead>
+        <group name="tryon-frame" scale={FRAME.scale} position={FRAME.position}>
+          {SLOTS.map((slot, s) => {
+            const i = look.picks[s];
+            if (i < 0) return null;
+            const { id } = slot.items[i];
+            return (
+              <Worn
+                key={`${slot.id}:${id}`}
+                id={id}
+                burst={burst[s]}
+                tier={tierFor(slot.id, slot.items[i])}
+                inMouth={slot.items[i].inMouth}
+              />
+            );
+          })}
+        </group>
+      </FilteredHead>
     </>
   );
 };

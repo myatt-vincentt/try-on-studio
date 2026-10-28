@@ -2,9 +2,11 @@
 // the air) reaches them. Night glass: Cypress 64 % glass, white marks, Arles
 // the only accent; strict ease-out.
 //
-//   ‹  • • • • • • • •  ›      the active slot's items (tap one, or the arrows)
+//      • • • • • • • •          the active slot's items (tap one; or drag
+//                                across the screen, or swipe in the air)
 //   🎩  🎭  🥸   🎲  ↺          slots (tap to pick one), shuffle, reset
 //
+// Both rows stay well inside a 375 px phone (≥ 45 px from each edge).
 // Two hints above them, until answered: a hand sweeping sideways (swipe in
 // the air to flip), then a pinch (lock the slot).
 import { Html } from "@react-three/drei";
@@ -20,28 +22,27 @@ const CSS = `
   background: linear-gradient(rgb(35 37 40 / 0), rgb(35 37 40 / .6)); }
 .ts-controls { position: absolute; left: 50%; bottom: max(calc(env(safe-area-inset-bottom) + 24px), 40px);
   transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.ts-row { display: flex; align-items: center; gap: 10px; }
+.ts-row { display: flex; align-items: center; gap: 6px; }
 .ts-btn { pointer-events: auto; border: 0; padding: 0; margin: 0; cursor: pointer; color: #fff;
   display: grid; place-items: center; background: var(--glass); backdrop-filter: var(--blur);
   -webkit-backdrop-filter: var(--blur); border-radius: 999px;
   transition: transform .18s ease-out, box-shadow .18s ease-out, background .18s ease-out; }
 .ts-btn:active { transform: scale(.94); }
-.ts-chip { width: 58px; height: 58px; font-size: 28px; position: relative; }
+.ts-chip { width: 52px; height: 52px; font-size: 25px; position: relative; }
 .ts-chip.on { box-shadow: 0 0 0 3px var(--arles); }
 .ts-chip .ts-lock { position: absolute; right: -2px; top: -2px; width: 20px; height: 20px; border-radius: 50%;
   background: var(--arles); display: grid; place-items: center; opacity: 0; transform: scale(.6);
   transition: opacity .2s ease-out, transform .2s ease-out; }
 .ts-chip .ts-lock.on { opacity: 1; transform: scale(1); }
-.ts-small { width: 48px; height: 48px; font-size: 22px; }
-.ts-gap { width: 10px; }
-.ts-dots { display: flex; align-items: center; gap: 2px; padding: 6px 8px; border-radius: 999px;
+.ts-small { width: 44px; height: 44px; font-size: 20px; }
+.ts-gap { width: 6px; }
+.ts-dots { display: flex; align-items: center; gap: 0; padding: 0 8px; border-radius: 999px;
   background: var(--glass); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); }
-.ts-dot { pointer-events: auto; border: 0; margin: 0; padding: 0; width: 26px; height: 30px; cursor: pointer;
+.ts-dot { pointer-events: auto; border: 0; margin: 0; padding: 0; width: 30px; height: 44px; cursor: pointer;
   background: transparent; display: grid; place-items: center; }
 .ts-dot > i { display: block; width: 12px; height: 12px; border-radius: 50%; opacity: .55;
   box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / .7); transition: all .2s ease-out; }
 .ts-dot.on > i { width: 18px; height: 18px; opacity: 1; box-shadow: 0 0 0 2.5px #fff; }
-.ts-arrow { width: 42px; height: 42px; }
 .ts-hint { position: absolute; left: 50%; bottom: max(calc(env(safe-area-inset-bottom) + 190px), 206px);
   transform: translateX(-50%); height: 52px; padding: 0 18px; border-radius: 999px; font-size: 26px;
   display: flex; align-items: center; gap: 6px; pointer-events: none;
@@ -124,14 +125,6 @@ export const Hud = () => {
 
         <div className="ts-controls">
           <div className="ts-row">
-            <button
-              type="button"
-              className="ts-btn ts-arrow"
-              aria-label="Previous"
-              onClick={() => actions.step(-1)}
-            >
-              <Chevron dir="left" />
-            </button>
             <div className="ts-dots">
               {slot.items.map((item, i) => (
                 <button
@@ -145,14 +138,6 @@ export const Hud = () => {
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              className="ts-btn ts-arrow"
-              aria-label="Next"
-              onClick={() => actions.step(1)}
-            >
-              <Chevron dir="right" />
-            </button>
           </div>
 
           <div className="ts-row">

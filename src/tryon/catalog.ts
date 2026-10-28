@@ -16,6 +16,11 @@ export type Item = {
    * and shows only while the mouth is open or smiling.
    */
   inMouth?: boolean;
+  /**
+   * Has parts hanging below the head (the flower crown's ribbons): needs the
+   * shoulder occluder, which needs body tracking — only run while it's worn.
+   */
+  hangs?: boolean;
 };
 
 export type Slot = {
@@ -37,7 +42,7 @@ export const SLOTS: readonly Slot[] = [
       { id: "beanie", color: "#c8433a" },
       { id: "frog-bucket-hat", color: "#5fb54a" },
       { id: "viking-helmet", color: "#8f949b" },
-      { id: "boho-flower-crown", color: "#f29bb8" },
+      { id: "boho-flower-crown", color: "#f29bb8", hangs: true },
     ],
   },
   {
@@ -86,14 +91,6 @@ export const NECK_OCCLUDER_URL = "/models/neck-occluder-bust-v1.glb";
  * to the chest: the long ribbon tails hang past the bust.
  */
 export const SHOULDER_OCCLUDER_URL = "/models/shoulder-occluder-v1.glb";
-
-/**
- * Head-fit smoothing (EMA per frame, 1 = none; the SDK's default is 0.5).
- * Lower is steadier on a noisy feed but trails a fast turn a little. The
- * occluder and the accessories run separate fits, so they share this value
- * or they drift apart.
- */
-export const FIT_SMOOTHING = 0.3;
 
 /**
  * The models' frame → the SDK's canonical head frame (centimetres): ×100,

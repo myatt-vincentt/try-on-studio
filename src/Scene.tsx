@@ -1,12 +1,13 @@
 // Scene.tsx — Try-On Studio: build a look one slot at a time (hat, face,
-// mouth). Sweep a hand sideways in the air to flip through the active slot,
-// pinch to lock it and move on; or tap the dots and chips. Shuffle for a
-// random look, reset to start again. See PLAN.md.
+// mouth). Sweep a hand sideways in the air (or drag across the screen) to
+// flip through the active slot, pinch to lock it and move on; or tap the dots
+// and chips. Shuffle for a random look, reset to start again. See PLAN.md.
 import { lazy, Suspense } from "react";
 
 import { Accessories } from "./tryon/Accessories";
 import { HandInput } from "./tryon/HandInput";
 import { Hud } from "./tryon/Hud";
+import { TouchSwipe } from "./tryon/TouchSwipe";
 
 // Dev-only helpers for previewing without a camera. Lazy and behind a
 // constant esbuild folds to false in production. Two rules:
@@ -26,6 +27,7 @@ export const Scene = () => (
   <>
     <Accessories />
     <HandInput />
+    <TouchSwipe />
     <Hud />
     {DevMediaSwitcher && DevKeys ? (
       <Suspense fallback={null}>

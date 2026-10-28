@@ -13,3 +13,6 @@ dev-media/*.mp4
 dev-media/*.mov
 dev-media/models-src/
 dev-media/thumbnail-options/
+audit/*.json
+audit/*.png
+audit/headFilter.cjs

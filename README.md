@@ -4,8 +4,8 @@ Build a look one piece at a time, wearing it live on your face. Three slots: a h
 for the face (masks, goggles, heart or star eyes, a monocle) and something for the mouth
 (moustaches, beards, fangs, a lollipop, a rose, a gold grill), eight of each. Sweep a hand
 sideways in the air to flip through the active slot, then pinch to lock it in and move on to the
-next. Or tap: the dots pick an item, the arrows flip, the chips pick a slot, 🎲 dresses you at
-random and ↺ starts again. No text on screen; two wordless hints (a sweeping hand, then a pinch)
+next. Or touch: drag across the screen to flip, the dots pick an item, the chips pick a slot, 🎲
+dresses you at random and ↺ starts again. No text on screen; two wordless hints (a sweeping hand, then a pinch)
 show the way.
 
 - The items react to you, as their author built them: smile and the moustache tips lift, the
@@ -15,6 +15,10 @@ show the way.
 - Hats and straps pass behind your head, and long ribbons behind your neck and shoulders, using
   the SDK's head occluder, neck bust and shoulder occluder (hosted in `public/models/` until the
   SDK CDN serves them). Your hands stay in front of everything.
+- Steady on the head: the SDK's head fit through a speed-adaptive spring (`headFilter.ts`), with
+  the head occluder moving in the same filtered group as the items. Tracking rates are set for
+  phones (face 20 Hz, hands 12 Hz); body tracking only runs for the flower crown. Audit and numbers
+  in `PLAN.md`; the harness is in `audit/`.
 - Models: vincentt.studio head accessories (`public/models/vincentt-*.glb`); credits in
   `CREDITS.md`. To swap items, edit `src/tryon/catalog.ts`.
 - Dev preview without a camera: the media switcher (☰) starts on the SDK's "Person Shaking Head"
