@@ -32,6 +32,10 @@ of it with sensor noise), and the SDK example's `hand_palms_waving.mp4`, `hand_f
 - `hands.cjs <clip> <label> [query]` — every look change over 16 s (swipes, locks).
 - `lockshot.cjs <clip>` — screenshots and pinch/grab readings at each lock.
 - `phone.cjs <clip>` — HUD margins at 375×812 and every tap / drag path.
+- `fit.cjs <out-dir> <clip.y4m> …` — every item on every clip, cropped to the head, one sheet per
+  slot (rows = items, columns = clips). `FIT='{"top-hat":{"y":1.5}}'` tries placements live before
+  they go into `catalog.ts`. Used with the SDK's five sample videos (`person_shaking_head`,
+  `person_looking`, `person_thumbUp`, `two_people_smiling`, `person_fullbody`).
 - `hud.cjs <clip>` — the item reel and slot chips at 375×812: margins, every tap path, failed
   requests, screenshots.
 - `shots.cjs <clip>` — fit and occlusion screenshots (`?occ`) and looks.

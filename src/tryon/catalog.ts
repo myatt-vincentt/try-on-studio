@@ -19,6 +19,17 @@ export type Item = {
    * shoulder occluder, which needs body tracking — only run while it's worn.
    */
   hangs?: boolean;
+  /**
+   * Fine placement on the head, checked on the SDK's five sample videos:
+   * `y` up / `z` toward the camera in canonical cm, `scale` about the
+   * item's own middle.
+   */
+  fit?: { y?: number; z?: number; scale?: number };
+  /**
+   * Overrides a face trigger's `map` ([from, to]) by input, where the
+   * author's range fires on a resting face for some people.
+   */
+  triggers?: Record<string, [number, number]>;
 };
 
 export type Slot = {
@@ -28,19 +39,23 @@ export type Slot = {
   items: readonly Item[];
 };
 
+// Hats sit 0.5–2.5 cm higher than the bare canonical skull puts them: real
+// heads have hair. The monocle's brows-up drop needs a firmer raise than its
+// author's range — some faces rest at 0.2–0.3. Checked on the SDK's five
+// sample videos (audit/fit.cjs).
 export const SLOTS: readonly Slot[] = [
   {
     id: "hat",
     icon: "🎩",
     items: [
-      { id: "cowboy-hat" },
-      { id: "top-hat" },
+      { id: "cowboy-hat", fit: { y: 0.5 } },
+      { id: "top-hat", fit: { y: 1.5 } },
       { id: "royal-crown" },
-      { id: "wizard-hat" },
-      { id: "beanie" },
-      { id: "frog-bucket-hat" },
-      { id: "viking-helmet" },
-      { id: "boho-flower-crown", hangs: true },
+      { id: "wizard-hat", fit: { y: 1.5 } },
+      { id: "beanie", fit: { y: 1.5 } },
+      { id: "frog-bucket-hat", fit: { y: 2.5 } },
+      { id: "viking-helmet", fit: { y: 1.5 } },
+      { id: "boho-flower-crown", hangs: true, fit: { y: 1.5 } },
     ],
   },
   {
@@ -54,7 +69,7 @@ export const SLOTS: readonly Slot[] = [
       { id: "mask-steampunk-goggle" },
       { id: "eye-heart-eyes" },
       { id: "eye-star-eyes" },
-      { id: "eye-monocle" },
+      { id: "eye-monocle", triggers: { browInnerUp: [0.45, 0.85] } },
     ],
   },
   {
@@ -62,7 +77,7 @@ export const SLOTS: readonly Slot[] = [
     icon: "🥸",
     items: [
       { id: "mustache-handlebar" },
-      { id: "mustache-dali" },
+      { id: "mustache-dali", fit: { scale: 1.1 } },
       { id: "beard-santa-claus" },
       { id: "beard-viking-braids" },
       { id: "mouth-vampire-fangs" },

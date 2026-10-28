@@ -16,6 +16,7 @@ import {
 } from "@vincentt-xr/sdk/low-level";
 import { useFaceInfo } from "@vincentt-xr/sdk/tracking";
 
+import { SLOTS } from "./catalog";
 import { FACE_FPS } from "./FilteredHead";
 import { HEAD_FILTER, headFilterStats } from "./headFilter";
 import { actions, getStudio, live } from "./state";
@@ -63,6 +64,8 @@ const DevKeys = () => {
       filter: HEAD_FILTER,
       filterStats: headFilterStats,
       handNode: () => handsRef.current,
+      // The catalog, live: item.fit edits apply on the next frame.
+      slots: SLOTS,
       measure: { pinch: measurePinch, grab: measureGrab },
     };
     const onKey = (e: KeyboardEvent) => {

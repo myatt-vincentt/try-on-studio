@@ -44,6 +44,11 @@ head fit and occluders.
   ribbons hang behind the body). The gold grill sits inside the mouth, which the rigid head
   occluder never opens, so it draws before the occluder and shows only while the mouth is open or
   smiling.
+- Per-item placement (`catalog.ts` `fit`: `y` / `z` cm, `scale` about the item's middle; and
+  `triggers` to override a face trigger's range), checked on the SDK's five sample videos with
+  `audit/fit.cjs`: hats sit 0.5–2.5 cm higher than the bare canonical skull (hair), the Dalí
+  moustache is 10 % larger, the monocle's brows-up drop needs a firmer raise (it fired on resting
+  faces), and the grill shows only past a closed-lip smile.
 - `Hud.tsx`: the item reel — pictures of the active slot's items (rendered from the models by
   `tools/render-thumbs.cjs`, cropped to fill), the worn one large in the middle, two either side
   (tap to wear, tap the middle to take off) — and the slot chips, each showing what's worn there.

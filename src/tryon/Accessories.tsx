@@ -140,8 +140,9 @@ const tierFor = (slot: SlotId, item: Item) => {
 /** How open the mouth reads for an inside-the-mouth item (0–1). */
 const mouthOpen = (b: Readonly<Record<string, number | undefined>>) =>
   Math.max(
-    (b.jawOpen ?? 0) / 0.3,
-    ((b.mouthSmileLeft ?? 0) + (b.mouthSmileRight ?? 0)) / 2 / 0.5,
+    (b.jawOpen ?? 0) / 0.35,
+    // A closed-lip smile reads up to ~0.4: the teeth only show past that.
+    ((b.mouthSmileLeft ?? 0) + (b.mouthSmileRight ?? 0)) / 2 / 0.8,
   );
 
 const Worn = ({
@@ -149,11 +150,14 @@ const Worn = ({
   burst,
   tier,
   inMouth = false,
+  fit,
 }: {
   id: string;
   burst: number;
   tier: readonly [number, number];
   inMouth?: boolean;
+  /** Per-item placement (catalog.ts): read every frame, so it can be tuned live. */
+  fit: Item;
 }) => {
   const { value } = useXRAsset(assetFor(id));
   const holder = useRef<Group>(null);
@@ -176,9 +180,16 @@ const Worn = ({
       mixer,
       burst: burstClip(value.animations),
       shake: shakeClip(cfg, value.animations),
-      rig: buildRig(root, cfg.face_triggers ?? [], mixer, value.animations),
+      rig: buildRig(
+        root,
+        (cfg.face_triggers ?? []).map((t) =>
+          fit.triggers?.[t.input] ? { ...t, map: fit.triggers[t.input] } : t,
+        ),
+        mixer,
+        value.animations,
+      ),
     };
-  }, [value, tier]);
+  }, [value, tier, fit]);
 
   useEffect(
     () => () => {
@@ -220,7 +231,14 @@ const Worn = ({
     model.mixer.update(Math.min(dt, 0.1));
     if (born.current < 0) born.current = state.clock.elapsedTime;
     const k = Math.min(1, (state.clock.elapsedTime - born.current) / POP);
-    holder.current.scale.setScalar(0.6 + 0.4 * easeOut(k));
+    // Pop in, then sit where its fit says (cm → the frame's metres).
+    const f = fit.fit;
+    holder.current.scale.setScalar((0.6 + 0.4 * easeOut(k)) * (f?.scale ?? 1));
+    holder.current.position.set(
+      model.centre.x,
+      model.centre.y + (f?.y ?? 0) / 100,
+      model.centre.z + (f?.z ?? 0) / 100,
+    );
   });
 
   if (!model) return null;
@@ -374,6 +392,7 @@ export const Accessories = () => {
                 burst={burst[s]}
                 tier={tierFor(slot.id, slot.items[i])}
                 inMouth={slot.items[i].inMouth}
+                fit={slot.items[i]}
               />
             );
           })}
