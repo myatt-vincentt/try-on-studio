@@ -8,8 +8,6 @@ export type SlotId = "hat" | "face" | "mouth";
 export type Item = {
   /** File name in public/models without `vincentt-` / `.glb`. */
   id: string;
-  /** Tint for the item's dot in the HUD (no text on screen). */
-  color: string;
   /**
    * Sits inside the mouth (a grill). The head occluder is rigid with closed
    * lips, so it would always hide it: it draws before the occluder instead
@@ -35,47 +33,50 @@ export const SLOTS: readonly Slot[] = [
     id: "hat",
     icon: "🎩",
     items: [
-      { id: "cowboy-hat", color: "#a0673a" },
-      { id: "top-hat", color: "#2b2b33" },
-      { id: "royal-crown", color: "#e8b64c" },
-      { id: "wizard-hat", color: "#4b3fa8" },
-      { id: "beanie", color: "#c8433a" },
-      { id: "frog-bucket-hat", color: "#5fb54a" },
-      { id: "viking-helmet", color: "#8f949b" },
-      { id: "boho-flower-crown", color: "#f29bb8", hangs: true },
+      { id: "cowboy-hat" },
+      { id: "top-hat" },
+      { id: "royal-crown" },
+      { id: "wizard-hat" },
+      { id: "beanie" },
+      { id: "frog-bucket-hat" },
+      { id: "viking-helmet" },
+      { id: "boho-flower-crown", hangs: true },
     ],
   },
   {
     id: "face",
     icon: "🎭",
     items: [
-      { id: "mask-cat", color: "#e8893a" },
-      { id: "mask-feather-masquerade", color: "#7b3fb8" },
-      { id: "mask-hero-domino", color: "#d23a3a" },
-      { id: "mask-neon-cyber-visor", color: "#33e1ff" },
-      { id: "mask-steampunk-goggle", color: "#b07a3e" },
-      { id: "eye-heart-eyes", color: "#ff4d79" },
-      { id: "eye-star-eyes", color: "#ffd84d" },
-      { id: "eye-monocle", color: "#d8b04e" },
+      { id: "mask-cat" },
+      { id: "mask-feather-masquerade" },
+      { id: "mask-hero-domino" },
+      { id: "mask-neon-cyber-visor" },
+      { id: "mask-steampunk-goggle" },
+      { id: "eye-heart-eyes" },
+      { id: "eye-star-eyes" },
+      { id: "eye-monocle" },
     ],
   },
   {
     id: "mouth",
     icon: "🥸",
     items: [
-      { id: "mustache-handlebar", color: "#5a3a26" },
-      { id: "mustache-dali", color: "#2a2725" },
-      { id: "beard-santa-claus", color: "#f4f2ec" },
-      { id: "beard-viking-braids", color: "#b4743a" },
-      { id: "mouth-vampire-fangs", color: "#e8e8f0" },
-      { id: "mouth-lollipop", color: "#ff5c8a" },
-      { id: "mouth-rose-in-teeth", color: "#c8102e" },
-      { id: "mouth-gold-grill", color: "#e8b64c", inMouth: true },
+      { id: "mustache-handlebar" },
+      { id: "mustache-dali" },
+      { id: "beard-santa-claus" },
+      { id: "beard-viking-braids" },
+      { id: "mouth-vampire-fangs" },
+      { id: "mouth-lollipop" },
+      { id: "mouth-rose-in-teeth" },
+      { id: "mouth-gold-grill", inMouth: true },
     ],
   },
 ];
 
 export const modelUrl = (id: string) => `/models/vincentt-${id}.glb`;
+
+/** The item's picture in the HUD (tools/render-thumbs.cjs renders them). */
+export const thumbUrl = (id: string) => `/thumbs/${id}.webp`;
 
 /** The SDK's v3 head occluder, hosted here until the SDK CDN serves it. */
 export const OCCLUDER_URL = "/models/head-occluder-v3.glb";

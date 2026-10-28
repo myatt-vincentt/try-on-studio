@@ -4,8 +4,9 @@ Build a look one piece at a time, wearing it live on your face. Three slots: a h
 for the face (masks, goggles, heart or star eyes, a monocle) and something for the mouth
 (moustaches, beards, fangs, a lollipop, a rose, a gold grill), eight of each. Sweep a hand
 sideways in the air to flip through the active slot, then pinch to lock it in and move on to the
-next. Or touch: drag across the screen to flip, the dots pick an item, the chips pick a slot, 🎲
-dresses you at random and ↺ starts again. No text on screen; two wordless hints (a sweeping hand, then a pinch)
+next. Or touch: drag across the screen to flip; the reel shows the items as pictures (tap one to
+wear it, tap the middle one to take it off); the chips pick a slot and show what you wear there;
+🎲 dresses you at random and ↺ starts again. No text on screen; two wordless hints (a sweeping hand, then a pinch)
 show the way.
 
 - The items react to you, as their author built them: smile and the moustache tips lift, the
@@ -20,7 +21,8 @@ show the way.
   phones (face 20 Hz, hands 12 Hz); body tracking only runs for the flower crown. Audit and numbers
   in `PLAN.md`; the harness is in `audit/`.
 - Models: vincentt.studio head accessories (`public/models/vincentt-*.glb`); credits in
-  `CREDITS.md`. To swap items, edit `src/tryon/catalog.ts`.
+  `CREDITS.md`. To swap items, edit `src/tryon/catalog.ts`, then re-render the HUD pictures
+  (`public/thumbs/`) with `tools/render-thumbs.cjs` (dev server running).
 - Dev preview without a camera: the media switcher (☰) starts on the SDK's "Person Shaking Head"
   video, and the keyboard stands in for the hand (← → flip, space locks, S shuffles, R resets).
   `?occ` draws the occluders to check the fit (dev only). An optional local clip goes at

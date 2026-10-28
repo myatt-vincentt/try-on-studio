@@ -7,3 +7,4 @@
 | public/models/head-occluder-v3.glb | Canonical head occluder v3 | vincentt.studio | @vincentt-xr/sdk (assets-src/head-occluder) | as the SDK | 2026-10-28 | © vincentt.studio |
 | public/models/neck-occluder-bust-v1.glb | Neck occluder bust v1 | vincentt.studio; based on "Complete 3D Reference - Spark AR" by jepharaujo | https://sketchfab.com/3d-models/complete-3d-reference-spark-ar-9ecb7f5a38d7497b99ed114ffc0c519a | CC BY 4.0 | 2026-10-28 | Based on "Complete 3D Reference - Spark AR" by jepharaujo, CC BY 4.0, modified by Vincentt |
 | public/models/shoulder-occluder-v1.glb | Shoulder occluder v1 | vincentt.studio | @vincentt-xr/sdk (assets-src/head-occluder) | as the SDK | 2026-10-28 | © vincentt.studio |
+| public/thumbs/*.webp (24 HUD pictures) | Renders of the head accessories above | vincentt.studio | rendered from public/models/vincentt-*.glb by tools/render-thumbs.cjs | © 2026 vincentt.studio, all rights reserved | 2026-10-28 | © vincentt.studio |

@@ -32,5 +32,7 @@ of it with sensor noise), and the SDK example's `hand_palms_waving.mp4`, `hand_f
 - `hands.cjs <clip> <label> [query]` — every look change over 16 s (swipes, locks).
 - `lockshot.cjs <clip>` — screenshots and pinch/grab readings at each lock.
 - `phone.cjs <clip>` — HUD margins at 375×812 and every tap / drag path.
+- `hud.cjs <clip>` — the item reel and slot chips at 375×812: margins, every tap path, failed
+  requests, screenshots.
 - `shots.cjs <clip>` — fit and occlusion screenshots (`?occ`) and looks.
 - `profile.cjs <clip> [cpuThrottle]` — CPU profile by file / function.

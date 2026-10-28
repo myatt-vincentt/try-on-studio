@@ -65,8 +65,13 @@ export const actions = {
       hints: { ...studio.hints, swiped: true },
     });
   },
+  /** Wear `item` in `slot` (−1 takes it off). */
   pick(slot: number, item: number) {
-    set({ ...studio, look: pickLook(studio.look, slot, item) });
+    set({
+      ...studio,
+      look: pickLook(studio.look, slot, item),
+      hints: { ...studio.hints, swiped: true },
+    });
   },
   selectSlot(slot: number) {
     set({ ...studio, look: selectLookSlot(studio.look, slot) });

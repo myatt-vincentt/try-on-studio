@@ -44,6 +44,10 @@ head fit and occluders.
   ribbons hang behind the body). The gold grill sits inside the mouth, which the rigid head
   occluder never opens, so it draws before the occluder and shows only while the mouth is open or
   smiling.
+- `Hud.tsx`: the item reel — pictures of the active slot's items (rendered from the models by
+  `tools/render-thumbs.cjs`, cropped to fill), the worn one large in the middle, two either side
+  (tap to wear, tap the middle to take off) — and the slot chips, each showing what's worn there.
+  Dots were read as a colour picker; pictures say what you're choosing.
 - Dev only: `DevKeys.tsx` (keyboard, `window.__tryon` with the audit probe), `DevMediaSwitcher.tsx`,
   `?occ` (draw the occluders), `?facefps=` / `?handfps=` (tracker rates).
 
